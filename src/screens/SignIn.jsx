@@ -5,22 +5,14 @@ import * as Yup from 'yup';
 import firebaseApp from '../plugins/firebase';
 
 class SignIn extends React.Component {
-
     _isMounted = false;
 
     handleOnSubmit = (values) => {
-        //spinner表示開始
-        if (this._isMounted) this.setState({ loading: true })
-        //サインイン（ログイン）処理
         firebaseApp.auth().signInWithEmailAndPassword(values.email, values.password)
             .then(res => {
-                //正常終了時
                 this.props.history.push("/dictionary");
-                if (this._isMounted) this.setState({ loading: false });
             })
             .catch(error => {
-                //異常終了時
-                if (this._isMounted) this.setState({ loading: false });
                 alert(error);
             });
 
@@ -62,6 +54,7 @@ class SignIn extends React.Component {
                                                 type="email"
                                                 name="email"
                                                 id="email"
+                                                autoComplete={"true"}
                                                 value={values.email}
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}/>
@@ -76,6 +69,7 @@ class SignIn extends React.Component {
                                             type="password"
                                             name="password"
                                             id="password"
+                                            autoComplete={"true"}
                                             value={values.password}
                                             onChange={handleChange}
                                             onBlur={handleBlur}/>

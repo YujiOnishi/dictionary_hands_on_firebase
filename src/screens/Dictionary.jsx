@@ -20,8 +20,8 @@ export default class Dictionary extends Component {
       <div>
         <div className="siimple-navbar siimple-navbar--success siimple-navbar--fluid">
           <div className="siimple-content siimple-content--small">
-            <a className="siimple-navbar-title">Dictionary</a>
-            <a className="siimple-navbar-subtitle">AI辞書</a>
+            <div className="siimple-navbar-title">Dictionary</div>
+            <div className="siimple-navbar-subtitle">AI辞書</div>
             <div className="siimple--float-right">
               <a className="siimple-navbar-subtitle" onClick={() => this.handleLogout()}>ログアウト</a>
             </ div>

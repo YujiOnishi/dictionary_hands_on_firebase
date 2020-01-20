@@ -5,29 +5,14 @@ import * as Yup from 'yup';
 import firebaseApp from '../plugins/firebase';
 
 class SignUp extends React.Component {
-
-    state = {
-        loading: false, //処理中にボタンにspinner表示する制御用
-    }
-
     _isMounted = false;
 
-    //Submitされたら
     handleOnSubmit = (values) => {
-        //spinner表示開始
-        if (this._isMounted) this.setState({ loading: true });
-        //新規登録処理
         firebaseApp.auth().createUserWithEmailAndPassword(values.email, values.password)
             .then(res => {
-                //正常終了時
-                //spinner表示終了
-                if (this._isMounted) this.setState({ loading: false });
-                //Homeに移動
                 this.props.history.push("/dictionary"); //history.pushを使うためwithRouterしている
             })
             .catch(error => {
-                //異常終了時
-                if (this._isMounted) this.setState({ loading: false });
                 alert(error);
             });
     }
