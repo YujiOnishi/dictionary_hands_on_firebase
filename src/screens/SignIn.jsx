@@ -7,7 +7,7 @@ import firebaseApp from '../plugins/firebase';
 class SignIn extends React.Component {
     _isMounted = false;
 
-    handleOnSubmit = (values) => {
+    handleOnSubmit (values){
         firebaseApp.auth().signInWithEmailAndPassword(values.email, values.password)
             .then(res => {
                 this.props.history.push("/dictionary");
@@ -15,14 +15,13 @@ class SignIn extends React.Component {
             .catch(error => {
                 alert(error);
             });
-
     }
 
-    componentDidMount = () => {
+    componentDidMount () {
         this._isMounted = true;
     }
 
-    componentWillUnmount = () => {
+    componentWillUnmount () {
         this._isMounted = false;
     }
 

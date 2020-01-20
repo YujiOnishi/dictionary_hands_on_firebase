@@ -7,21 +7,21 @@ import firebaseApp from '../plugins/firebase';
 class SignUp extends React.Component {
     _isMounted = false;
 
-    handleOnSubmit = (values) => {
+    handleOnSubmit (values){
         firebaseApp.auth().createUserWithEmailAndPassword(values.email, values.password)
             .then(res => {
-                this.props.history.push("/dictionary"); //history.pushを使うためwithRouterしている
+                this.props.history.push("/dictionary");
             })
             .catch(error => {
                 alert(error);
             });
     }
 
-    componentDidMount = () => {
+    componentDidMount () {
         this._isMounted = true;
     }
 
-    componentWillUnmount = () => {
+    componentWillUnmount () {
         this._isMounted = false;
     }
 

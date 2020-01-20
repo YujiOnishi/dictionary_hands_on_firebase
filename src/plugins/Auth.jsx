@@ -6,20 +6,16 @@ import firebaseApp from './firebase';
 class Auth extends React.Component {
 
     state = {
-        signinCheck: false, //ログインチェックが完了してるか
-        signedIn: false, //ログインしてるか
+        signinCheck: false,
+        signedIn: false,
     }
 
-    _isMounted = false; //unmountを判断（エラー防止用）
+    _isMounted = false;
 
-    componentDidMount = () => {
-        //mountされてる
+    componentDidMount() {
         this._isMounted = true;
-
-        //ログインしてるかどうかチェック
         firebaseApp.auth().onAuthStateChanged(user => {
             if (user) {
-                //してる
                 if (this._isMounted) {
                     this.setState({
                         signinCheck: true,
@@ -27,7 +23,6 @@ class Auth extends React.Component {
                     });
                 }
             } else {
-                //してない
                 if (this._isMounted) {
                     this.setState({
                         signinCheck: true,
@@ -38,12 +33,11 @@ class Auth extends React.Component {
         })
     }
 
-    componentWillUnmount = () => {
+    componentWillUnmount(){
         this._isMounted = false;
     }
 
     render() {
-        //チェックが終わってないなら（ローディング表示）
         if (!this.state.signinCheck) {
             return (
                 <LoadingOverlay
@@ -53,13 +47,9 @@ class Auth extends React.Component {
                 <div style={{ height: '100vh', width: '100vw' }}/></ LoadingOverlay>
             );
         }
-
-        //チェックが終わりかつ
         if (this.state.signedIn) {
-            //サインインしてるとき（そのまま表示）
             return this.props.children;
         } else {
-            //してないとき（ログイン画面にリダイレクト）
             return <Redirect to="/signin" />
         }
     }

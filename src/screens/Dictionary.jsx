@@ -10,9 +10,9 @@ export default class Dictionary extends Component {
     this._isMounted = true;
   }
   componentWillUnmount() {
-    this._isMounted = false;
+    this._isMouFnted = false;
   }
-  handleLogout = () => {
+  handleLogout ()  {
     firebaseApp.auth().signOut();
   }
   render() {

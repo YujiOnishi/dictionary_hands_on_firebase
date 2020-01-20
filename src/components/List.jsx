@@ -16,6 +16,19 @@ export default class List extends Component {
     this.changeType = this.changeType.bind(this);
   }
 
+  componentDidMount = () => {
+    this._isMounted = true;
+    this.getWords();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    this.getWords();
+  }
+
   getWords() {
     let type = "";
     let translatedType = "";
@@ -63,19 +76,6 @@ export default class List extends Component {
     this.setState({ type: dicType });
   }
 
-  componentDidMount = () => {
-    this._isMounted = true;
-    this.getWords();
-  }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-
-  componentDidUpdate = (prevProps, prevState) => {
-    this.getWords();
-  }
-
   render() {
     return (
       <div>
@@ -97,10 +97,8 @@ export default class List extends Component {
                   <div className="siimple-card-title siimple--color-white">{dicWord.word}</div>
                   <div className="siimple-card-subtitle siimple--color-white">訳:{dicWord.translated}</div>
                   <span className="siimple-tag siimple-tag--error" onClick={function () {
-                    firestore.collection("dictionary").doc(dicWord.id).delete().then(function () {
-                      //alert("削除しました");
-                    }).catch(function (error) {
-                      //alert("error");
+                    firestore.collection("dictionary").doc(dicWord.id).delete().then().catch(function (error) {
+                      alert("error" + error);
                     });
                   }}>Delete</span>
                 </div>
