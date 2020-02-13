@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, withRouter } from 'react-router-dom'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import firebaseApp from '../plugins/firebase';
+import {firebaseApp} from '../plugins/firebase';
 
 class SignIn extends React.Component {
     _isMounted = false;

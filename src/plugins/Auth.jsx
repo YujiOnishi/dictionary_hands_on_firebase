@@ -1,7 +1,14 @@
 import React from 'react';
 import LoadingOverlay from 'react-loading-overlay';
 import { Redirect } from 'react-router-dom';
-import firebaseApp from './firebase';
+import {firebaseApp} from './firebase';
+/**
+ * @license
+ * Copyright 2020 Y_Onishi.
+ * 
+ * Firebaseの認証処理を行います。
+ * 
+ */
 
 class Auth extends React.Component {
 

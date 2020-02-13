@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import firebaseApp from '../plugins/firebase';
-import { firestore } from '../plugins/firebase';
+import { firestore,firebaseApp } from '../plugins/firebase';
 
 export default class Form extends Component {
   _isMounted = false;
