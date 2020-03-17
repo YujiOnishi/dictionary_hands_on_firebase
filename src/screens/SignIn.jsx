@@ -10,7 +10,7 @@ class SignIn extends React.Component {
     handleOnSubmit (values){
         firebaseApp.auth().signInWithEmailAndPassword(values.email, values.password)
             .then(res => {
-                this.props.history.push("/dictionary");
+                this.props.history.push("/chat");
             })
             .catch(error => {
                 alert(error);
@@ -29,7 +29,7 @@ class SignIn extends React.Component {
         return (
             <div className="siimple-content siimple-content--extra-small">
                 <div className="siimple-h1 siimple--text-normal siimple--mb-1" align="center">
-                    Dictionary
+                    EduphileChat
                 </div>
                 <div className="siimple--px-5 siimple--py-5">
                     <div className="siimple-h3 siimple--text-normal siimple--mb-1" align="center">
@@ -76,7 +76,7 @@ class SignIn extends React.Component {
                                             {errors.password}
                                         </div>
                                         <div align="center">
-                                            <button className="siimple-btn siimple-btn--teal siimple-btn--fluid siimple--text-bold"
+                                            <button className="siimple-btn siimple-btn--primary siimple-btn--fluid siimple--text-bold"
                                                 type="submit">
                                                 SignIn
                                             </button>

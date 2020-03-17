@@ -1,110 +1,129 @@
 import React, { Component } from 'react';
-import { firestore,firebaseApp } from '../plugins/firebase';
+import { firestore, firebaseApp } from '../plugins/firebase';
 
 export default class List extends Component {
   _isMounted = false;
   constructor() {
     super();
     this.state = {
-      type: "en",
       words: [],
       documents: [],
-      isLoading: true
+      isLoading: true,
+      word: "",
+      uid: ""
     };
     this.getWords = this.getWords.bind(this);
-    this.changeType = this.changeType.bind(this);
+    this.addWord = this.addWord.bind(this);
+    this.changeWord = this.changeWord.bind(this);
   }
 
   componentDidMount = () => {
     this._isMounted = true;
-    this.getWords();
+    this.getWords(true);
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  componentDidUpdate = (prevProps, prevState) => {
-    this.getWords();
-  }
-
-  getWords() {
-    let type = "";
-    let translatedType = "";
-
-    type = this.state.type;
-    if (type === "en") {
-      translatedType = "ja"
-    }
-    else {
-      translatedType = "en"
-    }
-
-
+  getWords(isPost) {
     firebaseApp.auth().onAuthStateChanged(user => {
       if (user) {
-        firestore.collection('dictionary')
+        firestore.collection('room')
           .orderBy('created_at')
-          .where('type', '==', type)
-          .where('uid', '==', user.uid)
           .get()
           .then(snapShot => {
             let dicWords = [];
             snapShot.forEach(doc => {
-              if (doc.data().translated == null) {
-                return;
-              }
-              dicWords.push({
-                word: doc.data().word,
-                translated: doc.data().translated[translatedType],
-                id: doc.id
-              });
+              var userName;
+              var _timestamp = doc.data().created_at
+              var _d = _timestamp ? new Date(_timestamp * 1000) : new Date();
+              var m = ("0" + (_d.getMonth() + 1)).slice(-2);
+              var d = ("0" + _d.getDate()).slice(-2);
+              var H = ("0" + _d.getHours()).slice(-2);
+              var i = ("0" + _d.getMinutes()).slice(-2);
+              var s = ("0" + _d.getSeconds()).slice(-2);
+              var time = `${m}/${d} ${H}:${i}:${s}`;
+
+              firestore.collection("user").doc(doc.data().uid).get()
+                .then(docData => {
+                  if (!docData.exists) {
+                    userName = "No such name!";
+                  } else {
+                    userName = docData.data().name;
+                    dicWords.push({
+                      uid: doc.data().uid,
+                      word: doc.data().word,
+                      date: time,
+                      id: doc.id,
+                      name: userName
+                    });
+                    if (this._isMounted) {
+                      this.setState({
+                        words: dicWords,
+                        isLoading: false
+                      });
+                    }
+                  }
+                })
+                .catch(err => {
+                  userName = 'Error getting document' + err;
+                });
             });
-            if (this._isMounted) {
-              this.setState({
-                words: dicWords,
-                isLoading: false
-              });
-            }
           });
+      }
+    });
+
+    if (isPost) {
+      setTimeout(() => {
+        this.getWords(true);
+      }, 100000);
+    }
+  }
+
+  addWord() {
+    if (this.state["word"] === '') {
+      return
+    }
+    firebaseApp.auth().onAuthStateChanged(user => {
+      if (user) {
+        firestore.collection('room').add({
+          created_at: new Date(),
+          word: this.state.word,
+          uid: user.uid,
+        }).then(() => {
+          this.setState({ word: "" });
+          this.getWords(false);
+        });
       }
     });
   }
 
-  changeType(dicType) {
-    this.setState({ type: dicType });
+  changeWord(event) {
+    this.setState({ word: event.target.value });
   }
 
   render() {
     return (
       <div>
-        <label className="siimple-label siimple--color-white">表示:</label>
-        <div className="siimple-btn siimple-btn--primary" onClick={() => this.changeType("en")}>
-          英和
-        </div>
-        <div className="siimple-btn siimple-btn--primary" onClick={() => this.changeType("ja")}>
-          和英
-        </div>
-        <div className="siimple-rule"></div>
         {this.state.isLoading &&
           <div className="siimple-card-title siimple--color-white">Loading...</div>}
         {
           this.state.words.map(function (dicWord) {
             return (
-              <div className="siimple-card" key={dicWord.word}>
-                <div className="siimple-card-body">
-                  <div className="siimple-card-title siimple--color-white">{dicWord.word}</div>
-                  <div className="siimple-card-subtitle siimple--color-white">訳:{dicWord.translated}</div>
-                  <span className="siimple-tag siimple-tag--error" onClick={function () {
-                    firestore.collection("dictionary").doc(dicWord.id).delete().then().catch(function (error) {
-                      alert("error" + error);
-                    });
-                  }}>Delete</span>
-                </div>
+              <div className="siimple-card" key={dicWord.id}>
+                <div className="siimple-card-title siimple--color-white">{dicWord.word}</div>
+                <div className="siimple-card-subtitle siimple--color-white">{dicWord.name}:{dicWord.date}</div>
               </div>
             );
           })
         }
+        <form>
+          <div className="siimple-field">
+            <textarea name="word" type="text" className="siimple-textarea siimple-textarea--fluid" rows="5" onChange={this.changeWord} value={this.state.word} />
+          </div>
+          <div value="Add" className="siimple-btn siimple-btn--orange l siimple-btn--fluid siimple--text-bold" onClick={() => this.addWord()}>Post</div>
+        </form>
       </div>
     );
   }

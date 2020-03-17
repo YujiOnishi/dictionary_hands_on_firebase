@@ -24,11 +24,11 @@ export default class App extends Component {
             <Route exact path="/signup" component={SignUp} />
             <Auth>
               <Switch>
-                <Route exact path="/dictionary" component={Dictionary} />
+                <Route exact path="/chat" component={Dictionary} />
                 <Route render={() => <h1>error.</h1>} />
               </Switch>
             </Auth>
-            <Route exact path="/dictionary" component={SignIn} />
+            <Route exact path="/chat" component={SignIn} />
           </Switch>
         </Router>
       </div>
